@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/linolab/lino_redis/utils"
+	"github.com/linolabx/lino_redis/utils"
 )
 
 type LinoRedis struct {

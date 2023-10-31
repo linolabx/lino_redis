@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/linolab/lino_redis"
+	"github.com/linolabx/lino_redis"
 )
 
 var linoredis *lino_redis.LinoRedis

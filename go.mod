@@ -1,4 +1,4 @@
-module github.com/linolab/lino_redis
+module github.com/linolabx/lino_redis
 
 go 1.20
 
