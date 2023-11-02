@@ -46,6 +46,34 @@ func (l *Bitmap) Set(ctx context.Context, data *[]byte) error {
 	return err
 }
 
+func (l *Bitmap) GetRange(ctx context.Context, start int64, end int64) (*[]byte, error) {
+	byteStart := start / 8
+	byteEnd := end / 8
+	offset := start % 8
+
+	values, err := l.dataKey.GetRange(ctx, byteStart, byteEnd)
+	if err != nil {
+		return nil, err
+	}
+
+	bytes := make([]byte, (end-start)/8+1)
+	for i := range bytes {
+		currentValue := byte(0)
+		if i < len(values) {
+			currentValue = values[i]
+		}
+
+		nextValue := byte(0)
+		if i+1 < len(values) {
+			nextValue = values[i+1]
+		}
+
+		bytes[i] = (currentValue << offset) | (nextValue >> (8 - offset))
+	}
+
+	return &bytes, nil
+}
+
 func (l *Bitmap) GetBit(ctx context.Context, index int64) (int64, error) {
 	return l.dataKey.GetBit(ctx, index)
 }
@@ -73,6 +101,10 @@ func (l *Bitmap) SetBool(ctx context.Context, index int64, value bool) error {
 		bit = 1
 	}
 	return l.SetBit(ctx, index, bit)
+}
+
+func (l *Bitmap) Del(ctx context.Context) error {
+	return l.dataKey.Del(ctx)
 }
 
 func (l *Bitmap) Lock(ctx context.Context) error {

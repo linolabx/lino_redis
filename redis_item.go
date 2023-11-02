@@ -39,6 +39,13 @@ func (l *RedisItem) GetBit(ctx context.Context, offset int64) (int64, error) {
 func (l *RedisItem) SetBit(ctx context.Context, offset int64, value int) (int64, error) {
 	return l.key.SetBit(ctx, "", offset, value)
 }
+func (l *RedisItem) GetRange(ctx context.Context, start int64, end int64) ([]byte, error) {
+	return l.key.GetRange(ctx, "", start, end)
+}
+
+func (l *RedisItem) BitField(ctx context.Context, args ...interface{}) ([]int64, error) {
+	return l.key.BitField(ctx, "", args...)
+}
 
 func (l *RedisItem) Expire(ctx context.Context, expiration time.Duration) (bool, error) {
 	return l.key.Expire(ctx, "", expiration)

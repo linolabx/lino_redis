@@ -54,6 +54,14 @@ func (l *LinoRedis) GetBit(ctx context.Context, subPath string, offset int64) (i
 func (l *LinoRedis) SetBit(ctx context.Context, subPath string, offset int64, value int) (int64, error) {
 	return l.client.SetBit(ctx, l.resolve(subPath), offset, value).Result()
 }
+func (l *LinoRedis) GetRange(ctx context.Context, subPath string, start int64, end int64) ([]byte, error) {
+	return l.client.GetRange(ctx, l.resolve(subPath), start, end).Bytes()
+}
+
+// Bitfield
+func (l *LinoRedis) BitField(ctx context.Context, subPath string, args ...interface{}) ([]int64, error) {
+	return l.client.BitField(ctx, l.resolve(subPath), args...).Result()
+}
 
 // Keys
 func (l *LinoRedis) Scan(ctx context.Context, cursor uint64, match string, count int64) *redis.ScanCmd {
