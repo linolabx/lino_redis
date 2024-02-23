@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 type RedisItem struct {
@@ -41,6 +41,12 @@ func (l *RedisItem) SetBit(ctx context.Context, offset int64, value int) (int64,
 }
 func (l *RedisItem) GetRange(ctx context.Context, start int64, end int64) ([]byte, error) {
 	return l.key.GetRange(ctx, "", start, end)
+}
+func (l *RedisItem) BitPos(ctx context.Context, bit int64, args ...int64) (int64, error) {
+	return l.key.BitPos(ctx, "", bit, args...)
+}
+func (l *RedisItem) BitPosSpan(ctx context.Context, bit int8, start int64, end int64, span string) (int64, error) {
+	return l.key.BitPosSpan(ctx, "", bit, start, end, span)
 }
 
 func (l *RedisItem) BitField(ctx context.Context, args ...interface{}) ([]int64, error) {

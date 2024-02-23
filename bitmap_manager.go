@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 // BitmapManager
@@ -101,6 +101,23 @@ func (l *Bitmap) SetBool(ctx context.Context, index int64, value bool) error {
 		bit = 1
 	}
 	return l.SetBit(ctx, index, bit)
+}
+
+func (l *Bitmap) FindBit(ctx context.Context, bit int8, start int64, end int64) (int64, error) {
+	return l.dataKey.BitPosSpan(ctx, bit, start, end, "bit")
+}
+
+func (l *Bitmap) LoopBits(ctx context.Context, bit int8, start int64, end int64) func() (int64, error) {
+	cursor := start
+	return func() (int64, error) {
+		pos, err := l.FindBit(ctx, 1, cursor, end)
+		if err != nil {
+			return 0, err
+		}
+		cursor = pos + 1
+
+		return pos, nil
+	}
 }
 
 func (l *Bitmap) Del(ctx context.Context) error {

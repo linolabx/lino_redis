@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 )
 
 // Basic Operations
@@ -19,7 +19,7 @@ func (l *LinoRedis) SetNX(ctx context.Context, subPath string, value interface{}
 	return l.client.SetNX(ctx, l.resolve(subPath), value, expiration).Result()
 }
 func (l *LinoRedis) SetEX(ctx context.Context, subPath string, value interface{}, expiration time.Duration) (string, error) {
-	return l.client.SetEX(ctx, l.resolve(subPath), value, expiration).Result()
+	return l.client.SetEx(ctx, l.resolve(subPath), value, expiration).Result()
 }
 
 func (l *LinoRedis) Del(ctx context.Context, subPath string) error {
@@ -56,6 +56,12 @@ func (l *LinoRedis) SetBit(ctx context.Context, subPath string, offset int64, va
 }
 func (l *LinoRedis) GetRange(ctx context.Context, subPath string, start int64, end int64) ([]byte, error) {
 	return l.client.GetRange(ctx, l.resolve(subPath), start, end).Bytes()
+}
+func (l *LinoRedis) BitPos(ctx context.Context, subPath string, bit int64, args ...int64) (int64, error) {
+	return l.client.BitPos(ctx, l.resolve(subPath), bit, args...).Result()
+}
+func (l *LinoRedis) BitPosSpan(ctx context.Context, subPath string, bit int8, start int64, end int64, span string) (int64, error) {
+	return l.client.BitPosSpan(ctx, l.resolve(subPath), bit, start, end, span).Result()
 }
 
 // Bitfield
