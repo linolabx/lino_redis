@@ -121,7 +121,17 @@ func (l *Bitmap) LoopBits(ctx context.Context, bit int8, start int64, end int64)
 }
 
 func (l *Bitmap) Del(ctx context.Context) error {
-	return l.dataKey.Del(ctx)
+	err := l.dataKey.Del(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = l.lock.Del(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (l *Bitmap) Lock(ctx context.Context) error {

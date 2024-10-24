@@ -59,6 +59,14 @@ func (l *HeartBeatLock) startHeartBeat() {
 	}
 }
 
+func (l *HeartBeatLock) Del(ctx context.Context) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.cardiacArrest <- struct{}{}
+	return l.key.Del(ctx)
+}
+
 func (l *HeartBeatLock) TryLock(ctx context.Context) error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
