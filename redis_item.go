@@ -56,3 +56,7 @@ func (l *RedisItem) BitField(ctx context.Context, args ...interface{}) ([]int64,
 func (l *RedisItem) Expire(ctx context.Context, expiration time.Duration) (bool, error) {
 	return l.key.Expire(ctx, "", expiration)
 }
+
+func (l *RedisItem) TTL(ctx context.Context) (time.Duration, error) {
+	return l.key.TTL(ctx, "")
+}

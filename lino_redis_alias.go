@@ -113,3 +113,8 @@ func (l *LinoRedis) SIsMember(ctx context.Context, subPath string, member interf
 func (l *LinoRedis) SPop(ctx context.Context, subPath string) (string, error) {
 	return l.client.SPop(ctx, l.resolve(subPath)).Result()
 }
+
+// TTL
+func (l *LinoRedis) TTL(ctx context.Context, subPath string) (time.Duration, error) {
+	return l.client.TTL(ctx, l.resolve(subPath)).Result()
+}
