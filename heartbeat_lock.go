@@ -63,7 +63,7 @@ func (l *HeartBeatLock) Del(ctx context.Context) error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	l.cardiacArrest <- struct{}{}
+	close(l.cardiacArrest)
 	return l.key.Del(ctx)
 }
 
@@ -108,14 +108,5 @@ loop:
 }
 
 func (l *HeartBeatLock) Unlock(ctx context.Context) error {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.cardiacArrest <- struct{}{}
-	err := l.key.Del(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return l.Del(ctx)
 }

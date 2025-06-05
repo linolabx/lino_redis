@@ -3,8 +3,6 @@ package lino_redis_test
 import (
 	"context"
 	"testing"
-
-	"github.com/redis/go-redis/v9"
 )
 
 func TestBitMapManager(t *testing.T) {
@@ -12,21 +10,25 @@ func TestBitMapManager(t *testing.T) {
 	lredis := GetLinoRedis()
 
 	bitmap := lredis.NewBitmap("test-bitmap")
-	defer bitmap.Del(ctx)
-
-	bytes, err := bitmap.Get(ctx)
-	if err != redis.Nil {
-		t.Errorf("failed to get bitmap: %s", err)
+	if err := bitmap.HBLock.Lock(ctx); err != nil {
+		t.Errorf("failed to lock bitmap: %s", err)
 		t.FailNow()
 	}
 
-	if bitmap.SetBit(ctx, 0, 1) != nil {
+	defer bitmap.Del(ctx)
+
+	if _, err := bitmap.Get(ctx); err == nil {
+		t.Errorf("should be nil")
+		t.FailNow()
+	}
+
+	if err := bitmap.SetBit(ctx, 0, 1); err != nil {
 		t.Errorf("failed to set bit: %s", err)
 		t.FailNow()
 	}
 	// 1000 0000
 
-	bytes, err = bitmap.Get(ctx)
+	bytes, err := bitmap.Get(ctx)
 
 	if (*bytes)[0] != byte(0x80) {
 		t.Errorf("failed to get bitmap: %s", err)
@@ -56,14 +58,14 @@ func TestBitMapManager(t *testing.T) {
 		t.FailNow()
 	}
 
-	bytes, err = bitmap.GetRange(ctx, 16, 16+16)
+	bytes, _ = bitmap.GetRange(ctx, 16, 16+16)
 	// 10000000 00000001 0
 	if (*bytes)[1] != byte(0b_0000_0001) {
 		t.Errorf("wrong byte value in index 1: %08b", (*bytes)[1])
 		t.FailNow()
 	}
 
-	bytes, err = bitmap.GetRange(ctx, 15, 15+128)
+	bytes, _ = bitmap.GetRange(ctx, 15, 15+128)
 	// 01000000 00000000 10000000 0...
 	index_value := [][2]byte{
 		{0, 0b_0100_0000},

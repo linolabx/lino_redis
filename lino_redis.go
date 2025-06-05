@@ -2,6 +2,7 @@ package lino_redis
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/linolabx/lino_redis/utils"
@@ -35,11 +36,7 @@ func (l *LinoRedis) Ping(timeout time.Duration) bool {
 
 	_, err := l.client.Ping(ctx).Result()
 
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func (l *LinoRedis) resolve(parts ...string) string {
@@ -59,6 +56,14 @@ func (l *LinoRedis) Fork(parts ...string) *LinoRedis {
 	}
 }
 
+func (l *LinoRedis) Forkf(format string, args ...interface{}) *LinoRedis {
+	return l.Fork(fmt.Sprintf(format, args...))
+}
+
 func (l *LinoRedis) PrintKey() {
 	println(l.basePath)
+}
+
+func (l *LinoRedis) Close() error {
+	return l.client.Close()
 }

@@ -16,7 +16,7 @@ import (
 
 type Bitmap struct {
 	dataKey        *RedisItem
-	lock           *HeartBeatLock
+	HBLock         *HeartBeatLock
 	BitLockBaseKey *LinoRedis
 	BitDataBaseKey *LinoRedis
 }
@@ -25,7 +25,7 @@ func (l *LinoRedis) NewBitmap(basePath string) *Bitmap {
 	lr := l.Fork(basePath)
 	return &Bitmap{
 		dataKey:        lr.NewRedisItem("bits"),
-		lock:           lr.NewHeartBeatLock("lock", 10*time.Second),
+		HBLock:         lr.NewHeartBeatLock("lock", 4*time.Second),
 		BitLockBaseKey: lr.Fork("bitlock"),
 		BitDataBaseKey: lr.Fork("bitdata"),
 	}
@@ -126,18 +126,10 @@ func (l *Bitmap) Del(ctx context.Context) error {
 		return err
 	}
 
-	err = l.lock.Del(ctx)
+	err = l.HBLock.Del(ctx)
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func (l *Bitmap) Lock(ctx context.Context) error {
-	return l.lock.TryLock(ctx)
-}
-
-func (l *Bitmap) Unlock(ctx context.Context) error {
-	return l.lock.Unlock(ctx)
 }

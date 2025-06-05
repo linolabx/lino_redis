@@ -2,6 +2,7 @@ package lino_redis
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -13,6 +14,10 @@ type RedisItem struct {
 
 func (l *LinoRedis) NewRedisItem(subPath string) *RedisItem {
 	return &RedisItem{key: l.Fork(subPath)}
+}
+
+func (l *LinoRedis) NewRedisItemf(format string, args ...interface{}) *RedisItem {
+	return l.NewRedisItem(fmt.Sprintf(format, args...))
 }
 
 func (l *RedisItem) Get(ctx context.Context) *redis.StringCmd {
