@@ -11,7 +11,7 @@ var linoredis *lino_redis.LinoRedis
 
 func GetLinoRedis() *lino_redis.LinoRedis {
 	if linoredis == nil {
-		linoredis = lino_redis.NewLinoRedisFromUrl("redis://localhost:6379", "lino_redis-test")
+		linoredis = lino_redis.MustLoadRedis("redis://localhost:6379")
 	}
 
 	return linoredis

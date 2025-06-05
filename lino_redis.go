@@ -21,15 +21,6 @@ func NewLinoRedis(client *redis.Client, basePath string) *LinoRedis {
 	}
 }
 
-func NewLinoRedisFromUrl(redisURL string, basePath string) *LinoRedis {
-	options, err := redis.ParseURL(redisURL)
-	if err != nil {
-		panic(err)
-	}
-
-	return NewLinoRedis(redis.NewClient(options), basePath)
-}
-
 func (l *LinoRedis) Ping(timeout time.Duration) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
