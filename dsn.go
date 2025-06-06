@@ -1,6 +1,8 @@
 package lino_redis
 
 import (
+	"errors"
+
 	"github.com/geektheripper/vast-dsn/redis_dsn"
 	"github.com/redis/go-redis/v9"
 )
@@ -15,9 +17,13 @@ func LoadRedis(dsn string) (*LinoRedis, error) {
 }
 
 func LoadRedisWithPrefix(dsn string) (*LinoRedis, error) {
-	opts, prefix, err := redis_dsn.ParseRedisPrefix(dsn)
+	opts, prefix, err := redis_dsn.Parse(dsn)
 	if err != nil {
 		return nil, err
+	}
+
+	if prefix == "" {
+		return nil, errors.New("prefix is required")
 	}
 
 	return NewLinoRedis(redis.NewClient(opts), prefix), nil
