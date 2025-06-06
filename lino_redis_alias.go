@@ -117,6 +117,23 @@ func (l *LinoRedis) SCard(ctx context.Context, subPath string) (int64, error) {
 	return l.client.SCard(ctx, l.resolve(subPath)).Result()
 }
 
+// Number
+func (l *LinoRedis) Incr(ctx context.Context, subPath string) (int64, error) {
+	return l.client.Incr(ctx, l.resolve(subPath)).Result()
+}
+func (l *LinoRedis) IncrBy(ctx context.Context, subPath string, value int64) (int64, error) {
+	return l.client.IncrBy(ctx, l.resolve(subPath), value).Result()
+}
+func (l *LinoRedis) IncrByFloat(ctx context.Context, subPath string, value float64) (float64, error) {
+	return l.client.IncrByFloat(ctx, l.resolve(subPath), value).Result()
+}
+func (l *LinoRedis) Decr(ctx context.Context, subPath string) (int64, error) {
+	return l.client.Decr(ctx, l.resolve(subPath)).Result()
+}
+func (l *LinoRedis) DecrBy(ctx context.Context, subPath string, value int64) (int64, error) {
+	return l.client.DecrBy(ctx, l.resolve(subPath), value).Result()
+}
+
 // TTL
 func (l *LinoRedis) TTL(ctx context.Context, subPath string) (time.Duration, error) {
 	return l.client.TTL(ctx, l.resolve(subPath)).Result()

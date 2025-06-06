@@ -62,6 +62,22 @@ func (l *RedisItem) Expire(ctx context.Context, expiration time.Duration) (bool,
 	return l.key.Expire(ctx, "", expiration)
 }
 
+func (l *RedisItem) Incr(ctx context.Context) (int64, error) {
+	return l.key.Incr(ctx, "")
+}
+func (l *RedisItem) IncrBy(ctx context.Context, value int64) (int64, error) {
+	return l.key.IncrBy(ctx, "", value)
+}
+func (l *RedisItem) IncrByFloat(ctx context.Context, value float64) (float64, error) {
+	return l.key.IncrByFloat(ctx, "", value)
+}
+func (l *RedisItem) Decr(ctx context.Context) (int64, error) {
+	return l.key.Decr(ctx, "")
+}
+func (l *RedisItem) DecrBy(ctx context.Context, value int64) (int64, error) {
+	return l.key.DecrBy(ctx, "", value)
+}
+
 func (l *RedisItem) TTL(ctx context.Context) (time.Duration, error) {
 	return l.key.TTL(ctx, "")
 }
